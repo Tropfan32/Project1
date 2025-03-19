@@ -8,7 +8,7 @@
     <style>
         body {
             font-family: 'Montserrat', sans-serif;
-            background: #e0e0e0;
+            background: linear-gradient(to right, #e0e0e0, #c2c2c2);
             color: #333;
             margin: 0;
             padding: 0;
@@ -32,15 +32,15 @@
             background: white;
             padding: 40px;
             border-radius: 12px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
         }
         h1, h2, h3 {
             text-align: center;
-            color: #007BFF;
+            color: #7a5cc5;
         }
         p {
-            font-size: 1.3em;
-            line-height: 1.7;
+            font-size: 1.4em;
+            line-height: 1.8;
             text-align: justify;
         }
         ul {
@@ -68,9 +68,11 @@
             cursor: pointer;
             margin-top: 25px;
             transition: 0.3s;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
         }
         button:hover {
             background: #5a3ea0;
+            transform: scale(1.05);
         }
         input {
             width: 100%;
@@ -81,12 +83,34 @@
             font-size: 1.1em;
         }
         a {
-            color: #007BFF;
+            color: #7a5cc5;
             text-decoration: none;
             font-size: 1.3em;
         }
         a:hover {
             text-decoration: underline;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+            width: 400px;
+            max-width: 90%;
+        }
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
         }
     </style>
 </head>
@@ -95,7 +119,7 @@
     
     <div class="container">
         <h1>Защити свой дом и офис</h1>
-        <p>Наши системы безопасности обеспечивают надежную защиту и удобное управление. Мы используем передовые технологии для предотвращения угроз и взломов, гарантируя вашему дому и офису максимальный уровень безопасности. Современные решения позволяют мгновенно реагировать на любые подозрительные действия, обеспечивая вам спокойствие и уверенность в каждой минуте.</p>
+        <p>Наши системы безопасности обеспечивают надежную защиту и удобное управление. Мы используем передовые технологии для предотвращения угроз и взломов, гарантируя вашему дому и офису максимальный уровень безопасности.</p>
         
         <h2>Наши преимущества</h2>
         <ul>
@@ -105,54 +129,33 @@
             <li>Круглосуточная безопасность</li>
         </ul>
         
-        <button onclick="showOrderForm()">Оформить заказ</button>
-        
-        <div id="order-section" style="display:none;">
-            <h2>Оформление заказа</h2>
-            <input type="text" id="name" placeholder="Ваше имя" required>
-            <input type="tel" id="phone" placeholder="Ваш телефон" required>
-            <input type="text" id="address" placeholder="Адрес установки" required>
-            
-            <h3>Выберите тип датчика</h3>
-            <label>
-                <input type="radio" name="sensor" value="PIR"> PIR датчик
-            </label>
-            <label>
-                <input type="radio" name="sensor" value="Laser"> Лазерный датчик
-            </label>
-            
-            <button onclick="submitOrder()">Оформить заказ</button>
-        </div>
-        
-        <div id="payment-section" style="display:none;">
-            <h3>Ссылка для оплаты</h3>
-            <p><a id="kaspi-link" href="https://kaspi.kz/" target="_blank">Оплатить через Kaspi</a></p>
-        </div>
+        <button onclick="showModal()">Оформить заказ</button>
+    </div>
+    
+    <div class="overlay" id="overlay" onclick="closeModal()"></div>
+    <div class="modal" id="order-modal">
+        <h2>Оформление заказа</h2>
+        <input type="text" id="name" placeholder="Ваше имя" required>
+        <input type="tel" id="phone" placeholder="Ваш телефон" required>
+        <input type="text" id="address" placeholder="Адрес установки" required>
+        <h3>Выберите тип датчика</h3>
+        <label><input type="radio" name="sensor" value="PIR"> PIR датчик</label>
+        <label><input type="radio" name="sensor" value="Laser"> Лазерный датчик</label>
+        <button onclick="submitOrder()">Оформить заказ</button>
     </div>
     
     <script>
-        function showOrderForm() {
-            document.getElementById("order-section").style.display = "block";
+        function showModal() {
+            document.getElementById("order-modal").style.display = "block";
+            document.getElementById("overlay").style.display = "block";
         }
-        
+        function closeModal() {
+            document.getElementById("order-modal").style.display = "none";
+            document.getElementById("overlay").style.display = "none";
+        }
         function submitOrder() {
-            const name = document.getElementById("name").value;
-            const phone = document.getElementById("phone").value;
-            const address = document.getElementById("address").value;
-            const sensor = document.querySelector('input[name="sensor"]:checked')?.value;
-            
-            if (name && phone && address && sensor) {
-                document.getElementById("order-section").style.display = "none";
-                document.getElementById("payment-section").style.display = "block";
-                
-                const botToken = "7758820685:AAFOwcmV85ePy2jHci0BaFeF4_Fe5oZlYkA";
-                const chatId = "6620454832";
-                const message = `Новый заказ! Имя: ${name} Телефон: ${phone} Адрес: ${address} Датчик: ${sensor}`;
-                
-                fetch(`https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${chatId}&text=${message}`);
-            } else {
-                alert("Пожалуйста, заполните все поля");
-            }
+            alert("Заказ оформлен!");
+            closeModal();
         }
     </script>
 </body>
